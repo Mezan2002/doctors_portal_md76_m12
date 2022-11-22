@@ -1,7 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
+import Loading from "../../Shared/Loading/Loading";
 
 const AddDoctor = () => {
+  const imageHostingKey = process.env.REACT_APP_imgBB_key;
+  const { data: specialties, isLoading } = useQuery({
+    queryKey: ["specialty"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/appointmentSpecialty");
+      const data = await res.json();
+      return data;
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -9,11 +20,28 @@ const AddDoctor = () => {
   } = useForm();
 
   const handleAddDoctor = (data) => {
-    console.log(data);
+    const image = data.photo[0];
+    const formData = new FormData();
+    formData.append("image", image);
+    const url = `https://api.imgbb.com/1/upload?expiration=600&key=${imageHostingKey}`;
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((imageData) => {
+        if (imageData.success) {
+          console.log(imageData.data.url);
+        }
+      });
   };
 
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
   return (
-    <div>
+    <div className="w-96 p-7">
       <h2 className="text-4xl">Add a Doctor</h2>
       <form onSubmit={handleSubmit(handleAddDoctor)} className="mt-9">
         <div className="form-control w-full">
@@ -46,35 +74,38 @@ const AddDoctor = () => {
         </div>
         <div className="form-control w-full">
           <label className="label">
-            <span className="label-text">Password</span>
+            <span className="label-text">Specilty</span>
+          </label>
+          <select
+            {...register("specialty")}
+            className="select select-bordered w-full mb-10"
+          >
+            {specialties.map((specialty) => (
+              <option key={specialty._id} value={specialty.name}>
+                {specialty.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text">Photo</span>
           </label>
           <input
-            type="password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password Should be 6 Character or Longer",
-              },
-              pattern: {
-                value: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])/,
-                message:
-                  "Password Must Have Uppercase, Number and a Special Character",
-              },
+            type="file"
+            {...register("photo", {
+              required: "Photo is required",
             })}
-            className="input input-bordered w-full"
+            className="input input-bordered w-full mb-2 py-36 px-20 border-dotted border-2"
           />
-          <label className="label">
-            <span className="label-text-alt">Forgot Password?</span>
-          </label>
-          {errors.password && (
-            <p className="text-red-600">{errors.password.message}</p>
+          {errors.photo && (
+            <p className="text-red-600">{errors.photo.message}</p>
           )}
         </div>
         <input
           type="submit"
           className="btn btn-block btn-accent"
-          value="Log In"
+          value="Add Doctor"
         />
       </form>
     </div>
