@@ -38,7 +38,7 @@ const AddDoctor = () => {
             name: data.name,
             email: data.email,
             specialty: data.specialty,
-            photo: data.photo,
+            photo: imageData.data.url,
           };
 
           fetch("http://localhost:5000/doctors", {
