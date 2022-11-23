@@ -9,7 +9,7 @@ const BookingModal = ({
   selectedDate,
   refetch,
 }) => {
-  const { name, slots } = appointmentDetails;
+  const { name, slots, price } = appointmentDetails;
   const date = format(selectedDate, "PPPP");
   const { user } = useContext(AuthContext);
 
@@ -28,6 +28,7 @@ const BookingModal = ({
       fullName,
       email,
       phone,
+      price,
     };
 
     fetch("http://localhost:5000/bookings", {
