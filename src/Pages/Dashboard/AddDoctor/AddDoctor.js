@@ -29,6 +29,9 @@ const AddDoctor = () => {
     const url = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
     fetch(url, {
       method: "POST",
+      headers: {
+        authorization: `bearer ${localStorage.getItem("accessToken")}`,
+      },
       body: formData,
     })
       .then((res) => res.json())

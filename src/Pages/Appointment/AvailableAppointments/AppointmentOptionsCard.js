@@ -4,7 +4,7 @@ const AppointmentOptionsCard = ({
   appointmentOption,
   setAppointmentDetails,
 }) => {
-  const { name, slots } = appointmentOption;
+  const { name, slots, price } = appointmentOption;
   return (
     <div className="card shadow-xl mt-10">
       <div className="card-body text-center">
@@ -14,6 +14,9 @@ const AppointmentOptionsCard = ({
         </p>
         <p>
           {slots.length} {slots.length > 1 ? "Spaces" : "Space"} Available{" "}
+        </p>
+        <p className="">
+          <small>Price: ${price}</small>
         </p>
         <div className="card-actions justify-center">
           <label

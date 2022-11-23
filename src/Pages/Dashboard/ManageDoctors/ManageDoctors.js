@@ -32,6 +32,9 @@ const ManageDoctors = () => {
     if (proceed) {
       fetch(`http://localhost:5000/doctors/${doctor._id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `bearer ${localStorage.getItem("accessToken")}`,
+        },
       })
         .then((res) => res.json())
         .then((data) => {
